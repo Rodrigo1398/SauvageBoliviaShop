@@ -18,7 +18,7 @@ async function main() {
   await prisma.product.deleteMany();
   // ]);
 
-  const { products, users } = initialData;
+  const { users } = initialData;
 
   await prisma.user.createMany({
     data: users,
@@ -30,26 +30,26 @@ async function main() {
 
   // Productos
 
-  products.forEach(async (product) => {
+  // products.forEach(async (product) => {
 
-    const { images, ...rest } = product;
+  //   const { images, ...rest } = product;
 
-    const dbProduct = await prisma.product.create({
-      data: {
-        ...rest,
-      },
-    });
+  //   const dbProduct = await prisma.product.create({
+  //     data: {
+  //       ...rest,
+  //     },
+  //   });
 
-    // Images
-    const imagesData = images.map((image) => ({
-      url: image,
-      productId: dbProduct.id,
-    }));
+  //   // Images
+  //   const imagesData = images.map((image) => ({
+  //     url: image,
+  //     productId: dbProduct.id,
+  //   }));
 
-    await prisma.productImage.createMany({
-      data: imagesData,
-    });
-  });
+  //   await prisma.productImage.createMany({
+  //     data: imagesData,
+  //   });
+  // });
 
   console.log("Seed ejecutado correctamente");
 }

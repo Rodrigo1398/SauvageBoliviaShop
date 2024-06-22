@@ -10,10 +10,6 @@ export * from './auth/login';
 export * from './auth/logout';
 export * from './auth/register';
 
-export * from './category/get-categories';
-export * from './category/category-pagination';
-export * from './category/create-update-category';
-export * from './category/get-category-by-name';
 
 export * from './country/get-countries';
 

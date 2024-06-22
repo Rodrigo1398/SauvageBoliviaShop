@@ -63,9 +63,9 @@ export const LoginForm = () => {
       {/* <button type="submit" className="btn-primary">
         Ingresar
       </button> */}
-      <button type='submit' onClick={()=>signIn('google')}>
+      {/* <button type='submit' onClick={()=>signIn('google')}>
         Google
-      </button>
+      </button> */}
 
       {/* divisor l ine */}
       <div className="flex items-center my-5">

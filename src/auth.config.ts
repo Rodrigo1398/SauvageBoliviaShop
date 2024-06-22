@@ -67,7 +67,7 @@ export const authConfig: NextAuthConfig = {
 
 
           // Buscar el correo
-          const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+          const user = await prisma.user.findUnique({ where: { email: email } });
           if ( !user ) return null;
 
           // Comparar las contraseñas
