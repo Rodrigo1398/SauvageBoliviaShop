@@ -46,8 +46,6 @@ export const authConfig: NextAuthConfig = {
 
   },
 
-
-
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -80,7 +78,9 @@ export const authConfig: NextAuthConfig = {
           return rest;
       },
     }),
-  ]
+  ],
+  
+  trustHost: true,
 }
 
 
