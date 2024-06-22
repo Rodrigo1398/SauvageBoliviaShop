@@ -85,7 +85,7 @@ export const ProductForm = ({ product }: Props) => {
     formData.append("sizes", productToSave.sizes.toString());
     formData.append("colors", productToSave.colors.toString());
     formData.append("tags", productToSave.tags);
-    formData.append("categoryId", productToSave.category);
+    formData.append("category", productToSave.category);
     formData.append("gender", productToSave.gender);
 
     if (images) {
@@ -176,13 +176,13 @@ export const ProductForm = ({ product }: Props) => {
             {...register("category", { required: true })}
           >
             <option value="">[Seleccione]</option>
-            <option value="men">Boxers</option>
+            <option value="Boxers">Boxers</option>
             <option value="Soutiens">Soutiens</option>
             <option value="Bodys">Bodys</option>
             <option value="Corseteria">Corseteria</option>
             <option value="Bombachas">Bombachas</option>
             <option value="Portaligas">Portaligas</option>
-            <option value="Bikinis_Swinwearisex">Bikinis Swinwear</option>
+            <option value="Bikinis_Swinwear">Bikinis Swinwear</option>
             <option value="Pijamas_Homewear">Pijamas Homewear</option>
             <option value="Accesorios">Accesorios</option>
             <option value="Para_ellos">Para ellos</option>

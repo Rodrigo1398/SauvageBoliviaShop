@@ -16,12 +16,17 @@ export const ProductGridItem = ( { product }: Props ) => {
 
   const [ displayImage, setDisplayImage ] = useState( product.images[ 0 ] );
 
+  const localSrc = ( displayImage ) 
+  ? displayImage.startsWith('https') // https://urlcompletodelaimagen.jpg
+    ? displayImage
+    : `/products/${ displayImage }`
+  : '/imgs/placeholder.jpg';
 
   return (
     <div className="rounded-md overflow-hidden fade-in">
       <Link href={ `/product/${ product.slug }` }>
         <Image
-          src={ `/products/${ displayImage }` }
+          src={ localSrc }
           alt={ product.title }
           className="w-full object-cover rounded"
           width={ 500 }
