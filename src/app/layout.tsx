@@ -6,8 +6,8 @@ import { Providers } from "@/components";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Teslo | Shop",
-    default: "Home - Teslo | Shop",
+    template: "%s - Sauvage Bolivia",
+    default: "Sauvage Bolivia",
   },
   description: "Una tienda virtual de productos",
   manifest:"/manifest.json"
