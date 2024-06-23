@@ -25,7 +25,6 @@ interface Props {
 
 export const ProductSlideshow = ( { images, title, className }: Props ) => {
 
-
   const [ thumbsSwiper, setThumbsSwiper ] = useState<SwiperObject>();
 
   return (
