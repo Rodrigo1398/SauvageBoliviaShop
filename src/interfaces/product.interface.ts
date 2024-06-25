@@ -48,12 +48,33 @@ type Category =
   | "Disfraces"
   | "Lubricantes"
   | "Juegos";
+
 export type Size = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
+
 export type Color =
-  | "Rojo"
-  | "Negro"
-  | "Gris"
-  | "Verde"
-  | "Morado"
-  | "Amarillo"
-  | "Rosa";
+  | "ROSA_PALO"
+  | "ROJO"
+  | "NEGRO"
+  | "BLANCO"
+  | "AZUL"
+  | "VERDE"
+  | "VERDE_OLIVA"
+  | "NEGRO_ROSA"
+  | "NUDE"
+  | "SOFIA"
+  | "VINO"
+  | "FUCSIA"
+  | "UNICO"
+  | "CRUDO"
+  | "RUBI"
+  | "MOSTAZA"
+  | "GRIS"
+  | "BLANCO_SOFIA"
+  | "NEGRO_ROJO"
+  | "NEGRO_NUDE"
+  | "NEGRO_PRINT"
+  | "BLANCO_NEGRO"
+  | "NEGRO_MOSTAZA_NEGRO_GRIS"
+  | "NEGRO_GRIS"
+  | "NEGRO_SOFIA"
+  | "ROSA";

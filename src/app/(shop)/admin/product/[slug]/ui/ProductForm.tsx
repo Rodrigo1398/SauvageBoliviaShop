@@ -2,10 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Select, SelectItem } from "@nextui-org/react";
-import {
-  Product,
-  ProductImage as ProductWithImage,
-} from "@/interfaces";
+import { Product, ProductImage as ProductWithImage } from "@/interfaces";
 import clsx from "clsx";
 import { createUpdateProduct, deleteProductImage } from "@/actions";
 import { useRouter } from "next/navigation";
@@ -17,7 +14,34 @@ interface Props {
 }
 
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-const colors = ["Rojo", "Negro", "Gris", "Morado", "Amarillo", "Verde"];
+const colors = [
+  "ROSA_PALO",
+  "ROJO",
+  "NEGRO",
+  "BLANCO",
+  "AZUL",
+  "VERDE",
+  "VERDE_OLIVA",
+  "NEGRO_ROSA",
+  "NUDE",
+  "SOFIA",
+  "VINO",
+  "FUCSIA",
+  "UNICO",
+  "CRUDO",
+  "RUBÍ",
+  "MOSTAZA",
+  "GRIS",
+  "BLANCO_SOFIA",
+  "NEGRO_ROJO",
+  "NEGRO_NUDE",
+  "NEGRO_PRINT",
+  "BLANCO_NEGRO",
+  "NEGRO_MOSTAZA_NEGRO_GRIS",
+  "NEGRO_GRIS",
+  "NEGRO_SOFIA",
+  "ROSA",
+];
 
 interface FormInputs {
   title: string;
@@ -244,7 +268,7 @@ export const ProductForm = ({ product }: Props) => {
                   value={color}
                   onClick={() => onColorChanged(color)}
                 >
-                  {color}
+                  {color.replace(/_/g, " ")}
                 </SelectItem>
               ))}
             </Select>
