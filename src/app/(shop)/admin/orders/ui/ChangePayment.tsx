@@ -2,6 +2,8 @@
 
 import { changePaymentStatus } from "@/actions";
 import { IoCardOutline } from "react-icons/io5";
+import { useState } from "react";
+import clsx from "clsx";
 
 interface Props {
   id: string;
@@ -9,31 +11,41 @@ interface Props {
 }
 
 export const ChangePayment = ({ id, isPaid }: Props) => {
+  const [paid, setPaid] = useState<boolean>(isPaid);
+
+  const handleChange = () => {
+    setPaid(!paid);
+    changePaymentStatus(id, !paid);
+  };
+
   return (
     <>
-      {isPaid ? (
-        <>
-          <IoCardOutline className="text-green-800" />
-          <span className="mx-2 text-green-800">Pagada</span>
-          <input
-            onClick={() => changePaymentStatus(id, isPaid)}
-            type="checkbox"
-            checked={isPaid}
-            className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-          />
-        </>
-      ) : (
-        <>
-          <IoCardOutline className="text-red-800" />
-          <span className="mx-2 text-red-800">No Pagada</span>
-          <input
-            onClick={() => changePaymentStatus(id, isPaid)}
-            type="checkbox"
-            checked={isPaid}
-            className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-          />
-        </>
-      )}
+      <IoCardOutline
+        className={clsx({
+          "text-red-800": paid ===false,
+          "text-green-800": paid === true,
+        })}
+      />
+      <span
+        className={clsx("mx-2 ", {
+          "text-red-800":paid === false,
+          "text-green-800": paid === true,
+        })}
+      >
+        {paid === true ? "Pagada" : "No Pagada"}
+      </span>
+      <input
+        onChange={handleChange}
+        type="checkbox"
+        checked={paid}
+        className={clsx(
+          "w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-2",
+          {
+            "text-red-600 focus:ring-red-500": paid === false,
+            "text-green-600 focus:ring-green-500": paid === true,
+          }
+        )}
+      />
     </>
   );
 };

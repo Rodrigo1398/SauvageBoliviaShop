@@ -1,26 +1,27 @@
-'use server';
+// 'use server';
 
-import prisma from '@/lib/prisma';
-// import { sleep } from '@/utils';
-
-
-export const getStockBySlug = async( slug: string ): Promise<number> => {
-
-  try {
-
-    // await sleep(3);
+// import prisma from '@/lib/prisma';
+// // import { sleep } from '@/utils';
 
 
-    const stock = await prisma.product.findFirst({
-      where: { slug },
-      select: { inStock: true }
-    });
+// export const getStockBySlug = async( slug: string ): Promise<number> => {
 
-    return stock?.inStock ?? 0;
+//   try {
 
-  } catch (error) {
-    return 0;
-  }
+//     // await sleep(3);
 
 
-}
+//     const stock = await prisma.product.findFirst({
+//       where: { slug },
+//       // select: { inStock: true }
+//     });
+
+//     // return stock?.inStock ?? 0;
+//     return stock.;
+
+//   } catch (error) {
+//     return 0;
+//   }
+
+
+// }

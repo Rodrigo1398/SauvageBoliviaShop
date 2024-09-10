@@ -16,7 +16,6 @@ export const getPaginatedProductsWithImages = async ({
   gender,
   category,
 }: PaginationOptions) => {
-
   if (isNaN(Number(page))) page = 1;
 
   if (page < 1) page = 1;
@@ -31,6 +30,20 @@ export const getPaginatedProductsWithImages = async ({
           take: 2,
           select: {
             url: true,
+          },
+        },
+        ProductColorSizeStock: {
+          include: {
+            size: {
+              select: {
+                name: true,
+              },
+            },
+            color: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
       },
@@ -50,7 +63,7 @@ export const getPaginatedProductsWithImages = async ({
     });
 
     const totalPages = Math.ceil(totalCount / take);
-    
+
     return {
       currentPage: page,
       totalPages: totalPages,

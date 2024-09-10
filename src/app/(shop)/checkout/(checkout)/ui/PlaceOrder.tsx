@@ -32,16 +32,12 @@ export const PlaceOrder = () => {
 
   const onPlaceOrder = async() => {
     setIsPlacingOrder(true);
-    // await sleep(2);
-
     const productsToOrder = cart.map( product => ({
       productId: product.id,
       quantity: product.quantity,
       size: product.size,
       color: product.color
     }))
-
-
     //! Server Action
     const resp = await placeOrder( productsToOrder, address);
     if ( !resp.ok ) {
@@ -49,12 +45,9 @@ export const PlaceOrder = () => {
       setErrorMessage(resp.message);
       return;
     }
-
     //* Todo salio bien!
     clearCart();
     router.replace('/orders/' + resp.order?.id );
-
-
   }
 
 

@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 import { ChangePayment } from "./ui/ChangePayment";
 
 export default async function OrdersPage() {
-
   const { ok, orders = [] } = await getPaginatedOrders();
 
   if (!ok) {
@@ -62,15 +61,7 @@ export default async function OrdersPage() {
                   {order.OrderAddress?.firstName} {order.OrderAddress?.lastName}
                 </td>
                 <td className="flex items-center text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                  {order.isPaid ? (
-                    <>
-                      <ChangePayment id={order.id} isPaid={order.isPaid} />
-                    </>
-                  ) : (
-                    <>
-                      <ChangePayment id={order.id} isPaid={order.isPaid} />
-                    </>
-                  )}
+                  <ChangePayment id={order.id} isPaid={order.isPaid} />
                 </td>
                 <td className="text-sm text-gray-900 font-light px-6 ">
                   <Link

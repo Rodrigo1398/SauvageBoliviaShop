@@ -7,8 +7,9 @@ import { titleFont } from "@/config/fonts";
 import {
   ProductMobileSlideshow,
   ProductSlideshow,
+  StockLabel,
 } from "@/components";
-import { getProductBySlug } from "@/actions";
+import { getAllSizes, getProductBySlugClient } from "@/actions";
 import { AddToCart } from './ui/AddToCart';
 
 interface Props {
@@ -24,7 +25,9 @@ export async function generateMetadata(
 
   const slug = params.slug;
 
-  const product = await getProductBySlug(slug);
+  const product = await getProductBySlugClient(slug);
+
+  const sizes = await getAllSizes();
 
   if (!product) {
     notFound();
@@ -44,7 +47,7 @@ export async function generateMetadata(
 export default async function ProductBySlugPage({ params }: Props) {
   const { slug } = params;
 
-  const product = await getProductBySlug(slug);
+  const product = await getProductBySlugClient(slug);
 
   if (!product) {
     notFound();
@@ -71,15 +74,14 @@ export default async function ProductBySlugPage({ params }: Props) {
 
       {/* Detalles */}
       <div className="col-span-1 px-5">
-        {/* <StockLabel slug={product.slug} /> */}
+        
+        <StockLabel sku={product.id} />
 
         <h1 className={` ${titleFont.className} antialiased font-bold text-xl`}>
           {product.title}
         </h1>
 
-        <p className="text-lg mb-5">Bs.{product.price}</p>
-
-        <AddToCart product={ product }/>
+        <AddToCart product={ product } productColorSizeStock={product.ProductColorSizeStock}/>
 
         {/* Descripción */}
         <h3 className="font-bold text-sm">Descripción</h3>

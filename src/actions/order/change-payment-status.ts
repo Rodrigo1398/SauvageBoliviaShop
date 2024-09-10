@@ -8,32 +8,26 @@ export const changePaymentStatus = async( orderId: string, status: boolean ) => 
 
   try {
 
-    const isPaid = status === false ? true:false;
-
-
     const order = await prisma.order.update({
       where: {
         id: orderId
       },
       data: {
-        isPaid: isPaid
+        isPaid: status
       }
     })
 
-    revalidatePath('/admin/orders');
+    revalidatePath(`/orders/${orderId}`);
 
     return {
       ok: true
     }
     
   } catch (error) {
-    console.log(error);
     return {
       ok: false,
       message: 'No se pudo actualizar el estado, revisar logs'
     }
   }
-
-
 
 }

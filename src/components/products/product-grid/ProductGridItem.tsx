@@ -4,11 +4,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Product } from '@/interfaces';
+import { Product, ProductColorSizeStock } from '@/interfaces';
 import { useState } from 'react';
 
 interface Props {
-  product: Product;
+  product: ProductColorSizeStock;
 }
 
 
@@ -29,8 +29,8 @@ export const ProductGridItem = ( { product }: Props ) => {
           src={ localSrc }
           alt={ product.title }
           className="w-full object-cover rounded"
-          width={ 500 }
-          height={ 500 }
+          width={ 1000 }
+          height={ 1000 }
           onMouseEnter={ () => setDisplayImage( product.images[1] )  }
           onMouseLeave={ () => setDisplayImage( product.images[0] ) }
         />
@@ -42,7 +42,7 @@ export const ProductGridItem = ( { product }: Props ) => {
           href={ `/product/${ product.slug }` }>
           { product.title }
         </Link>
-        <span className="font-bold">${ product.price }</span>
+        <span className="font-bold">BS { product.ProductColorSizeStock[0].price }</span>
       </div>
 
     </div>

@@ -6,20 +6,37 @@ import { ColorSelector, QuantitySelector, SizeSelector } from "@/components";
 import type { CartProduct, Color, Product, Size } from "@/interfaces";
 import { useCartStore } from "@/store";
 
+interface Datos {
+  size: {
+    id: number;
+    name: string;
+  };
+  color: {
+    id: number;
+    name: string;
+  };
+  price: number;
+  stock: number;
+}
 interface Props {
   product: Product;
+  productColorSizeStock: Datos[];
 }
 
-export const AddToCart = ({ product }: Props) => {
+export const AddToCart = ({ product, productColorSizeStock }: Props) => {
   const addProductToCart = useCartStore((state) => state.addProductTocart);
 
-  const [size, setSize] = useState<Size | undefined>();
+  const [size, setSize] = useState<Size | undefined>(
+    productColorSizeStock[0].size
+  );
   const [color, setColor] = useState<Color | undefined>();
+
+  const [datos, setDatos] = useState<Datos>(productColorSizeStock[0]);
+
   const [quantity, setQuantity] = useState<number>(1);
   const [posted, setPosted] = useState(false);
 
   const addToCart = () => {
-    
     setPosted(true);
 
     if (!size || !color) return;
@@ -28,7 +45,7 @@ export const AddToCart = ({ product }: Props) => {
       id: product.id,
       slug: product.slug,
       title: product.title,
-      price: product.price,
+      price: datos.price,
       quantity: quantity,
       size: size,
       color: color,
@@ -38,12 +55,13 @@ export const AddToCart = ({ product }: Props) => {
     addProductToCart(cartProduct);
     setPosted(false);
     setQuantity(1);
-    setSize(undefined);
+    // setSize(undefined);
     setColor(undefined);
   };
 
   return (
     <>
+      <p className="text-lg mb-5">Bs {datos.price}</p>
       {posted && !size && (
         <span className="mt-2 text-red-500 fade-in">
           Debe de seleccionar una talla*
@@ -53,15 +71,18 @@ export const AddToCart = ({ product }: Props) => {
       {/* Selector de Tallas */}
       <SizeSelector
         selectedSize={size}
-        availableSizes={product.sizes}
+        availableSizes={productColorSizeStock}
         onSizeChanged={setSize}
+        onDatoChanged={setDatos}
       />
 
       {/* Selector de Colores */}
       <ColorSelector
         selectedColor={color}
-        availableColors={product.colors}
+        availableColors={productColorSizeStock}
         onColorChanged={setColor}
+        onDatoChanged={setDatos}
+        datoColor={datos}
       />
 
       {/* Selector de Cantidad */}

@@ -1,11 +1,23 @@
+import { Color } from "./color.interface";
+import { ProductColorSize } from "./product-color-size";
+import { Size } from "./size.interface";
+
+
+export interface ProductColorSizeStock{
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  tags: string[];
+  gender: string;
+  category: string;
+  ProductColorSizeStock: ProductColorSize[];
+  images: string[];
+}
 export interface Product {
   id: string;
   description: string;
   images: string[];
-  inStock: number;
-  price: number;
-  sizes: Size[];
-  colors: Color[];
   slug: string;
   tags: string[];
   title: string;
@@ -48,33 +60,3 @@ type Category =
   | "Disfraces"
   | "Lubricantes"
   | "Juegos";
-
-export type Size = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
-
-export type Color =
-  | "ROSA_PALO"
-  | "ROJO"
-  | "NEGRO"
-  | "BLANCO"
-  | "AZUL"
-  | "VERDE"
-  | "VERDE_OLIVA"
-  | "NEGRO_ROSA"
-  | "NUDE"
-  | "SOFIA"
-  | "VINO"
-  | "FUCSIA"
-  | "UNICO"
-  | "CRUDO"
-  | "RUBI"
-  | "MOSTAZA"
-  | "GRIS"
-  | "BLANCO_SOFIA"
-  | "NEGRO_ROJO"
-  | "NEGRO_NUDE"
-  | "NEGRO_PRINT"
-  | "BLANCO_NEGRO"
-  | "NEGRO_MOSTAZA_NEGRO_GRIS"
-  | "NEGRO_GRIS"
-  | "NEGRO_SOFIA"
-  | "ROSA";

@@ -100,7 +100,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   </Link>
                 </td>
                 <td className="text-sm font-bold  text-gray-900 px-6 py-4 whitespace-nowrap">
-                  {currencyFormat(product.price)}
+                  {product.ProductColorSizeStock.map(obj=>`${currencyFormat(obj.price)}`).join(' - ')}
                 </td>
 
                 <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
@@ -108,11 +108,12 @@ export default async function ProductsPage({ searchParams }: Props) {
                 </td>
 
                 <td className="text-sm text-gray-900 font-bold px-6 py-4 whitespace-nowrap">
-                  {product.inStock}
+                  {/* {product.ProductColorSizeStock.map(obj=>`${obj.stock}`).join(' - ')} */}
+                  {product.ProductColorSizeStock.reduce((total,obj)=>total + obj.stock,0)}
                 </td>
 
                 <td className="text-sm text-gray-900 font-bold px-6 py-4 whitespace-nowrap">
-                  {product.sizes.join(", ")}
+                {product.ProductColorSizeStock.map(obj=>`${obj.size.name}`).join(' - ')}
                 </td>
               </tr>
             ))}

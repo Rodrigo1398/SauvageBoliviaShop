@@ -2,44 +2,49 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { Gender, Product, Size, Color, Category } from "@prisma/client";
+import { Gender, Category, Product } from "@prisma/client";
 import { z } from "zod";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config(process.env.CLOUDINARY_URL ?? "");
+
+const productColorSizeSchema = z.object({
+  productId: z.string().uuid().optional(),
+  colorId: z.number(), // Ajusta según el tipo real de colorId
+  sizeId: z.number(), // Ajusta según el tipo real de sizeId
+  stock: z.number().int().positive(), // Ajusta según el tipo real de stock
+  price: z.number().positive(), // Ajusta según el tipo real de price
+});
+
+const arrayOfProductColorSizeSchema = z.array(productColorSizeSchema);
 
 const productSchema = z.object({
   id: z.string().uuid().optional().nullable(),
   title: z.string().min(3).max(255),
   slug: z.string().min(3).max(255),
   description: z.string(),
-  price: z.coerce
-    .number()
-    .min(0)
-    .transform((val) => Number(val.toFixed(2))),
-  inStock: z.coerce
-    .number()
-    .min(0)
-    .transform((val) => Number(val.toFixed(0))),
   category: z.nativeEnum(Category),
-  sizes: z.coerce.string().transform((val) => val.split(",")),
-  colors: z.coerce.string().transform((val) => val.split(",")),
   tags: z.string(),
   gender: z.nativeEnum(Gender),
 });
 
 export const createUpdateProduct = async (formData: FormData) => {
-  const data = Object.fromEntries(formData);
 
-  const productParsed = productSchema.safeParse(data);
+  const datos = JSON.parse(formData.get("productcolorsize") as string);
+  formData.delete("productcolorsize");
+  const datas = Object.fromEntries(formData);
+  const productParsed = productSchema.safeParse(datas);
+  const datosParsed = arrayOfProductColorSizeSchema.safeParse(datos);
 
-  if (!productParsed.success) {
+  if (!productParsed.success || !datosParsed.success) {
     return { ok: false };
   }
 
   const product = productParsed.data;
 
-  product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
+  const productColorSizeStock = datosParsed.data;
+
+  // product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
 
   const { id, ...rest } = product;
 
@@ -56,37 +61,62 @@ export const createUpdateProduct = async (formData: FormData) => {
           where: { id },
           data: {
             ...rest,
-            sizes: {
-              set: rest.sizes as Size[],
-            },
-            colors: {
-              set: rest.colors as Color[],
-            },
             tags: {
               set: tagsArray,
             },
           },
         });
+
+        await Promise.all(
+          productColorSizeStock.map((update) =>
+            prisma.productColorSizeStock.upsert({
+              where: {
+                productId_colorId_sizeId: {
+                  productId: id,
+                  colorId: update.colorId,
+                  sizeId: update.sizeId,
+                },
+              },
+              update: {
+                stock: update.stock,
+                price: update.price,
+              },
+              create: {
+                productId: id,
+                colorId: update.colorId,
+                sizeId: update.sizeId,
+                stock: update.stock,
+                price: update.price,
+              },
+            })
+          )
+        );
       } else {
         // Crear
         product = await prisma.product.create({
           data: {
             ...rest,
-            sizes: {
-              set: rest.sizes as Size[],
-            },
-            colors: {
-              set: rest.colors as Color[],
-            },
             tags: {
               set: tagsArray,
             },
           },
         });
+
+        const updatedProductColorSizeStock = productColorSizeStock.map(
+          (pcss) => ({
+            ...pcss,
+            productId: product.id,
+          })
+        );
+
+        await prisma.productColorSizeStock.createMany({
+          data: updatedProductColorSizeStock,
+        });
       }
 
       // Proceso de carga y guardado de imagenes
       // Recorrer las imagenes y guardarlas
+
       if (formData.getAll("images")) {
         // [https://url.jpg, https://url.jpg]
         const images = await uploadImages(formData.getAll("images") as File[]);
@@ -132,7 +162,7 @@ const uploadImages = async (images: File[]) => {
         const base64Image = Buffer.from(buffer).toString("base64");
 
         return cloudinary.uploader
-          .upload(`data:image/png;base64,${base64Image}`)
+          .upload(`data:image/png;base64,${base64Image}`,{format:'webp'})
           .then((r) => r.secure_url);
       } catch (error) {
         console.log(error);
@@ -143,7 +173,6 @@ const uploadImages = async (images: File[]) => {
     const uploadedImages = await Promise.all(uploadPromises);
     return uploadedImages;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };

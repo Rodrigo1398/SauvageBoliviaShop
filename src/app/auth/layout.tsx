@@ -1,5 +1,6 @@
-import { auth } from '@/auth.config';
+import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 
 export default async function ShopLayout( { children }: {

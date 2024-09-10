@@ -5,12 +5,28 @@ import prisma from '@/lib/prisma';
 
 export const getProductBySlug = async( slug: string ) => {
 
-
   try {
 
     const product = await prisma.product.findFirst({
       include: {
-        ProductImage: true
+        ProductImage: true,
+        ProductColorSizeStock:true,
+        // ProductColorSizeStock: {
+        //   include: {
+        //     size: {
+        //       select: {
+        //         id:true,
+        //         name: true,
+        //       },
+        //     },
+        //     color: {
+        //       select: {
+        //         id:true,
+        //         name: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
       where: {
         slug: slug,

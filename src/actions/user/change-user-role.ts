@@ -1,15 +1,15 @@
 'use server';
 
-import { auth } from '@/auth.config';
 import prisma from '@/lib/prisma';
+import { useSession } from 'next-auth/react';
 import { revalidatePath } from 'next/cache';
 
 
 export const changeUserRole = async( userId: string, role: string ) => {
 
-  const session = await auth();
+  const session = await useSession();
 
-  if ( session?.user.role !== 'admin' ) {
+  if ( session.data?.user?.role !== 'admin' ) {
     return {
       ok: false,
       message: 'Debe de estar autenticado como admin'

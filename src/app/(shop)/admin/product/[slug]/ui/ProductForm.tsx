@@ -1,100 +1,82 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { Select, SelectItem } from "@nextui-org/react";
-import { Product, ProductImage as ProductWithImage } from "@/interfaces";
-import clsx from "clsx";
+import {
+  Color,
+  Product,
+  ProductColorSize,
+  ProductImage as ProductWithImage,
+  Size,
+} from "@/interfaces";
 import { createUpdateProduct, deleteProductImage } from "@/actions";
 import { useRouter } from "next/navigation";
 import { ProductImage } from "@/components";
 import { Category, Gender } from "@prisma/client";
+import { StockSizeColor } from "./StockSizeColor";
+
 
 interface Props {
-  product: Partial<Product> & { ProductImage?: ProductWithImage[] };
+  product: Partial<Product> & {
+    ProductImage?: ProductWithImage[];
+  };
+  sizes: Size[];
+  colors: Color[];
+  productColorSize: ProductColorSize[];
 }
-
-const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-const colors = [
-  "ROSA_PALO",
-  "ROJO",
-  "NEGRO",
-  "BLANCO",
-  "AZUL",
-  "VERDE",
-  "VERDE_OLIVA",
-  "NEGRO_ROSA",
-  "NUDE",
-  "SOFIA",
-  "VINO",
-  "FUCSIA",
-  "UNICO",
-  "CRUDO",
-  "RUBÍ",
-  "MOSTAZA",
-  "GRIS",
-  "BLANCO_SOFIA",
-  "NEGRO_ROJO",
-  "NEGRO_NUDE",
-  "NEGRO_PRINT",
-  "BLANCO_NEGRO",
-  "NEGRO_MOSTAZA_NEGRO_GRIS",
-  "NEGRO_GRIS",
-  "NEGRO_SOFIA",
-  "ROSA",
-];
 
 interface FormInputs {
   title: string;
   slug: string;
   description: string;
-  price: number;
-  inStock: number;
-  sizes: string[];
-  colors: string[];
+  productcolorsize: ProductColorSize[];
   tags: string;
   gender: Gender;
   category: Category;
+  productColorSizeStock: {
+    colorId: number;
+    sizeId: number;
+    stock: number;
+    price: number;
+  }[];
   images?: FileList;
 }
 
-export const ProductForm = ({ product }: Props) => {
+export const ProductForm = ({
+  product,
+  productColorSize,
+  sizes,
+  colors,
+}: Props) => {
+
   const router = useRouter();
 
   const {
     handleSubmit,
     register,
-    formState: { isValid },
-    getValues,
+    control,
     setValue,
-    watch,
+    formState: { isValid },
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
       tags: product.tags?.join(", "),
-      sizes: product.sizes ?? [],
-      colors: product.colors ?? [],
+      productColorSizeStock:
+        productColorSize.length > 0
+          ? productColorSize
+          : [{ colorId: 0, sizeId: 0, stock: 0, price: 0 }],
       images: undefined,
     },
   });
 
-  watch("sizes");
-  watch("colors");
-
-  const onSizeChanged = (size: string) => {
-    const sizes = new Set(getValues("sizes"));
-    sizes.has(size) ? sizes.delete(size) : sizes.add(size);
-    setValue("sizes", Array.from(sizes));
-  };
-
-  const onColorChanged = (color: string) => {
-    const colors = new Set(getValues("colors"));
-    colors.has(color) ? colors.delete(color) : colors.add(color);
-    setValue("colors", Array.from(colors));
-  };
-
+  // const { fields, append, remove } = useFieldArray({
+  //   name: "productColorSizeStock",
+  //   control,
+  // });
+  
   const onSubmit = async (data: FormInputs) => {
-    const formData = new FormData();
 
+    const formData = new FormData();
+    
     const { images, ...productToSave } = data;
 
     if (product.id) {
@@ -104,10 +86,7 @@ export const ProductForm = ({ product }: Props) => {
     formData.append("title", productToSave.title);
     formData.append("slug", productToSave.slug);
     formData.append("description", productToSave.description);
-    formData.append("price", productToSave.price.toString());
-    formData.append("inStock", productToSave.inStock.toString());
-    formData.append("sizes", productToSave.sizes.toString());
-    formData.append("colors", productToSave.colors.toString());
+    formData.append("productcolorsize", JSON.stringify(productToSave.productColorSizeStock));
     formData.append("tags", productToSave.tags);
     formData.append("category", productToSave.category);
     formData.append("gender", productToSave.gender);
@@ -126,6 +105,7 @@ export const ProductForm = ({ product }: Props) => {
     }
 
     router.replace(`/admin/product/${updatedProduct?.slug}`);
+
   };
 
   return (
@@ -160,15 +140,6 @@ export const ProductForm = ({ product }: Props) => {
             className="p-2 border rounded-md bg-gray-200"
             {...register("description", { required: true })}
           ></textarea>
-        </div>
-
-        <div className="flex flex-col mb-2">
-          <span>Price</span>
-          <input
-            type="number"
-            className="p-2 border rounded-md bg-gray-200"
-            {...register("price", { required: true, min: 0 })}
-          />
         </div>
 
         <div className="flex flex-col mb-2">
@@ -217,97 +188,55 @@ export const ProductForm = ({ product }: Props) => {
             <option value="Juegos">Juegos</option>
           </select>
         </div>
-
-        <button className="btn-primary w-full">Guardar</button>
       </div>
 
-      {/* Selector de tallas y fotos */}
-      <div className="w-full">
+      {/* As checkboxes */}
+      <div className="flex flex-col">
+        <StockSizeColor
+          sizes={sizes}
+          colors={colors}
+          control={control}
+          register={register}
+          setValue={setValue}
+          productColorSIzeStock={productColorSize}
+          productId={product.id}
+        />
+
         <div className="flex flex-col mb-2">
-          <span>Inventario</span>
+          <span>Fotos</span>
           <input
-            type="number"
+            type="file"
+            {...register("images")}
+            multiple
             className="p-2 border rounded-md bg-gray-200"
-            {...register("inStock", { required: true, min: 0 })}
+            accept="image/png, image/jpeg, image/avif"
           />
         </div>
+        <button className="btn-primary w-full">Guardar</button>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {product.ProductImage?.map((image) => (
+            <div key={image.id}>
+              <ProductImage
+                alt={product.title ?? ""}
+                src={image.url}
+                width={300}
+                height={300}
+                className="rounded-t shadow-md"
+              />
 
-        {/* As checkboxes */}
-        <div className="flex flex-col">
-          <span>Tallas</span>
-          <div className="flex flex-wrap">
-            {sizes.map((size) => (
-              // bg-blue-500 text-white <--- si está seleccionado
-              <div
-                key={size}
-                onClick={() => onSizeChanged(size)}
-                className={clsx(
-                  "p-2 border cursor-pointer rounded-md mr-2 mb-2 w-14 transition-all text-center",
-                  {
-                    "bg-blue-500 text-white": getValues("sizes").includes(size),
-                  }
-                )}
+              <button
+                type="button"
+                onClick={() => deleteProductImage(image.id, image.url)}
+                className="btn-danger w-full rounded-b-xl"
               >
-                <span>{size}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col">
-            <span>Colores</span>
-            <Select
-              label="Seleccion"
-              selectionMode="multiple"
-              placeholder="No seleccionado"
-              selectedKeys={getValues("colors")}
-              // onSelectionChange={setValues}
-            >
-              {colors.map((color) => (
-                <SelectItem
-                  key={color}
-                  value={color}
-                  onClick={() => onColorChanged(color)}
-                >
-                  {color.replace(/_/g, " ")}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
-
-          <div className="flex flex-col mb-2">
-            <span>Fotos</span>
-            <input
-              type="file"
-              {...register("images")}
-              multiple
-              className="p-2 border rounded-md bg-gray-200"
-              accept="image/png, image/jpeg, image/avif"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {product.ProductImage?.map((image) => (
-              <div key={image.id}>
-                <ProductImage
-                  alt={product.title ?? ""}
-                  src={image.url}
-                  width={300}
-                  height={300}
-                  className="rounded-t shadow-md"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => deleteProductImage(image.id, image.url)}
-                  className="btn-danger w-full rounded-b-xl"
-                >
-                  Eliminar
-                </button>
-              </div>
-            ))}
-          </div>
+                Eliminar
+              </button>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* </div> */}
     </form>
   );
 };
