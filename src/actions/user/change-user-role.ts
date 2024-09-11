@@ -1,15 +1,15 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { useSession } from 'next-auth/react';
 import { revalidatePath } from 'next/cache';
+import { auth } from '@/auth';
 
 
 export const changeUserRole = async( userId: string, role: string ) => {
 
-  const session = await useSession();
+  const session = await auth();
 
-  if ( session.data?.user?.role !== 'admin' ) {
+  if ( session?.user.role !== 'admin' ) {
     return {
       ok: false,
       message: 'Debe de estar autenticado como admin'
@@ -37,13 +37,10 @@ export const changeUserRole = async( userId: string, role: string ) => {
     }
     
   } catch (error) {
-    console.log(error);
     return {
       ok: false,
       message: 'No se pudo actualizar el role, revisar logs'
     }
   }
-
-
 
 }
