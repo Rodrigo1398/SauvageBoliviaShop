@@ -1,6 +1,5 @@
 "use client";
 
-import { getStockBySlug } from "@/actions";
 import { titleFont } from "@/config/fonts";
 import { useEffect, useState } from "react";
 

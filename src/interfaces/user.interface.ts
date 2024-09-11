@@ -1,9 +1,10 @@
 export interface User {
   id: string;
-  name: string;
+  name?: string;
   email: string;
-  emailVerified?: Date | null;
-  password: string;
+  emailVerified?: Date;
+  password?: string;
+  isActive: boolean;
   role: string;
-  image?: string | null;
+  image?: string;
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { changeUserRole } from "@/actions";
-import type { User } from "@/interfaces";
+import { User } from "@prisma/client";
+// import type { User } from "@/interfaces";
 
 interface Props {
   users: User[];
