@@ -39,7 +39,10 @@ export const UsersTable = ({ users }: Props) => {
             key={user.id}
             className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
           >
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 md:hidden">
+              {user.email.slice(0,5)+'...'}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 hidden md:table-cell">
               {user.email}
             </td>
             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">

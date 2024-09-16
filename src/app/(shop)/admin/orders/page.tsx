@@ -17,7 +17,6 @@ export default async function OrdersPage() {
   return (
     <>
       <Title title="Todas las orders" />
-
       <div className="mb-10">
         <table className="min-w-full">
           <thead className="bg-gray-200 border-b">
@@ -30,7 +29,7 @@ export default async function OrdersPage() {
               </th>
               <th
                 scope="col"
-                className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                className="text-sm font-medium text-gray-900 px-6 py-4 text-left hidden md:table-cell"
               >
                 Nombre completo
               </th>
@@ -54,10 +53,13 @@ export default async function OrdersPage() {
                 key={order.id}
                 className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 md:hidden">
+                  {order.id.slice(0,5)+'...'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 hidden md:table-cell">
                   {order.id.split("-").at(-1)}
                 </td>
-                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap hidden md:table-cell">
                   {order.OrderAddress?.firstName} {order.OrderAddress?.lastName}
                 </td>
                 <td className="flex items-center text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
@@ -75,7 +77,6 @@ export default async function OrdersPage() {
             ))}
           </tbody>
         </table>
-
         <Pagination totalPages={1} />
       </div>
     </>

@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="w-full h-[74vh]">
+    <div className="w-full">
       <div className="flex flex-col items-center pt-5">
       <Title title="Perfil"/>
         <Image

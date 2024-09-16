@@ -10,3 +10,4 @@ export * from './user.interface';
 export * from './color.interface';
 export * from './size.interface';
 export * from './product-color-size';
+export * from './productadmin.interface';

@@ -9,7 +9,7 @@ import {
   ProductSlideshow,
   StockLabel,
 } from "@/components";
-import { getAllSizes, getProductBySlugClient } from "@/actions";
+import { getProductBySlugClient } from "@/actions";
 import { AddToCart } from './ui/AddToCart';
 
 interface Props {
@@ -27,8 +27,6 @@ export async function generateMetadata(
 
   const product = await getProductBySlugClient(slug);
 
-  const sizes = await getAllSizes();
-
   if (!product) {
     notFound();
   }
@@ -39,7 +37,7 @@ export async function generateMetadata(
     openGraph: {
       title: product.title,
       description: product.description,
-      images: [`https://jrac.vercel.app/products/${ product.images[1] }`],
+      images: [`${ product.images[1] }`],
     },
   };
 }

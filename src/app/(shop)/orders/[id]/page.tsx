@@ -5,6 +5,7 @@ import { getOrderById } from "@/actions/order/get-order-by-id";
 import { currencyFormat } from "@/utils";
 import { OrderStatus, PayPalButton, Title } from "@/components";
 import Link from "next/link";
+import { auth } from "@/auth";
 
 interface Props {
   params: {
@@ -14,6 +15,8 @@ interface Props {
 
 export default async function OrdersByIdPage({ params }: Props) {
   const { id } = params;
+
+  const session = await auth();
 
   // Todo: Llamar el server action
 
@@ -109,15 +112,31 @@ export default async function OrdersByIdPage({ params }: Props) {
               </span>
             </div>
 
-            <div className="mt-5 mb-2 w-full">
-              <Link
-                href={`https://wa.me/74542714?text=Orden %23 ${id.split("-").at(-1)}`}
-                target="_blank"
-                className="w-full block text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-              >
-                Whatsapp
-              </Link>
-            </div>
+            {session?.user.role === "admin" ? (
+              <div className="mt-5 mb-2 w-full">
+                <Link
+                  href={`https://wa.me/${address?.phone}?text=Orden %23 ${id
+                    .split("-")
+                    .at(-1)}`}
+                  target="_blank"
+                  className="w-full block text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+                >
+                  Whatsapp
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-5 mb-2 w-full">
+                <Link
+                  href={`https://wa.me/74542714?text=Orden %23 ${id
+                    .split("-")
+                    .at(-1)}`}
+                  target="_blank"
+                  className="w-full block text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+                >
+                  Whatsapp
+                </Link>
+              </div>
+            )}
             {/* <div className="mt-5 mb-2 w-full">
               {order?.isPaid ? (
                 <OrderStatus isPaid={order?.isPaid ?? false} />
