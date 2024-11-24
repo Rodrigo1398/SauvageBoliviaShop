@@ -1,9 +1,6 @@
-version: '3.8'
-
-
 services:
   postgres-db:
-    image: postgres:15.3
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -14,7 +11,7 @@ services:
     ports:
       - 5432:5432
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     environment:
       PGADMIN_DEFAULT_EMAIL: "dk@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "dk1398"

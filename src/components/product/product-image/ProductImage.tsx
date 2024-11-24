@@ -32,6 +32,7 @@ export const ProductImage = ({
       alt={ alt }
       className={ className }
       style={ style }
+      priority={true}
     />
   );
 };

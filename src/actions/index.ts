@@ -30,6 +30,7 @@ export * from './product/get-product-by-slug-client';
 // export * from './product/get-stock-by-slug';
 export * from './product/product-pagination';
 export * from './product/delete-productcolorsizestock';
+export * from './product/delete-product-by-id';
 
 
 export * from './user/change-user-role';
@@ -39,8 +40,10 @@ export * from './color/create-update-color';
 export * from './color/get-all-colors';
 export * from './color/get-all-colors-pagination';
 export * from './color/get-by-id-color';
+export * from './color/delete-color-by-id';
 
 export * from './size/create-update-size';
 export * from './size/get-all-sizes';
 export * from './size/get-all-sizes-pagination';
 export * from './size/get-by-id-size';
+export * from './size/delete-size-by-id';

@@ -44,9 +44,12 @@ export const createUpdateProduct = async (formData: FormData) => {
 
   const productColorSizeStock = datosParsed.data;
 
-  // product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
+  product.slug = product.slug
+  .toLowerCase() // Convertir todo a minúsculas
+  .replace(/[^a-z0-9]+/g, '-') // Reemplazar caracteres no alfanuméricos por guiones
+  .replace(/^-+|-+$/g, ''); // Eliminar guiones al principio y al final
 
-  const { id, ...rest } = product;
+  const { id,...rest } = product;
 
   try {
     const prismaTx = await prisma.$transaction(async (tx) => {
@@ -165,7 +168,6 @@ const uploadImages = async (images: File[]) => {
           .upload(`data:image/png;base64,${base64Image}`,{format:'webp'})
           .then((r) => r.secure_url);
       } catch (error) {
-        console.log(error);
         return null;
       }
     });

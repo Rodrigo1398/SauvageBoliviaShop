@@ -69,7 +69,7 @@ model Product {
 }
 
 model ProductColorSizeStock {
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id],onDelete: Cascade)
   productId String
   color     Color   @relation(fields: [colorId], references: [id])
   colorId   Int
@@ -85,7 +85,7 @@ model ProductImage {
   id  Int    @id @default(autoincrement())
   url String
 
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id],onDelete: Cascade)
   productId String
 }
 
