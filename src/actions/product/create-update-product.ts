@@ -26,15 +26,16 @@ const productSchema = z.object({
   category: z.nativeEnum(Category),
   tags: z.string(),
   gender: z.nativeEnum(Gender),
+  discount: z.string(),
 });
 
 export const createUpdateProduct = async (formData: FormData) => {
-
   const datos = JSON.parse(formData.get("productcolorsize") as string);
   formData.delete("productcolorsize");
   const datas = Object.fromEntries(formData);
   const productParsed = productSchema.safeParse(datas);
   const datosParsed = arrayOfProductColorSizeSchema.safeParse(datos);
+
 
   if (!productParsed.success || !datosParsed.success) {
     return { ok: false };
@@ -49,11 +50,12 @@ export const createUpdateProduct = async (formData: FormData) => {
   .replace(/[^a-z0-9]+/g, '-') // Reemplazar caracteres no alfanuméricos por guiones
   .replace(/^-+|-+$/g, ''); // Eliminar guiones al principio y al final
 
-  const { id,...rest } = product;
+  const { id,discount:ds,...rest } = product;
 
   try {
     const prismaTx = await prisma.$transaction(async (tx) => {
       let product: Product;
+      const discount = Number(ds);
       const tagsArray = rest.tags
         .split(",")
         .map((tag) => tag.trim().toLowerCase());
@@ -63,6 +65,7 @@ export const createUpdateProduct = async (formData: FormData) => {
         product = await prisma.product.update({
           where: { id },
           data: {
+            discount,
             ...rest,
             tags: {
               set: tagsArray,
@@ -98,6 +101,7 @@ export const createUpdateProduct = async (formData: FormData) => {
         // Crear
         product = await prisma.product.create({
           data: {
+            discount,
             ...rest,
             tags: {
               set: tagsArray,

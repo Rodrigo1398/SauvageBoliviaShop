@@ -21,9 +21,9 @@ export interface Product {
   slug: string;
   tags: string[];
   title: string;
-  //todo: type: Type;
   gender: Gender;
   category: Category;
+  discount: number|null;
 }
 
 export interface CartProduct {
@@ -34,6 +34,7 @@ export interface CartProduct {
   quantity: number;
   size: Size;
   color: Color;
+  discount: number|null;
   image: string;
 }
 

@@ -2,23 +2,69 @@
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
-import { IoSearchOutline, IoCartOutline } from "react-icons/io5";
+import {
+  IoSearchOutline,
+  IoCartOutline,
+  IoChevronDownOutline,
+} from "react-icons/io5";
 
 import { titleFont } from "@/config/fonts";
 import { useCartStore, useUIStore } from "@/store";
-import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const TopMenu = () => {
   const openSideMenu = useUIStore((state) => state.openSideMenu);
   const totalItemsInCart = useCartStore((state) => state.getTotalItems());
 
   const [loaded, setLoaded] = useState(false);
-
-  const [men, setMen] = useState(false);
+  const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+
+  const menuItems = [
+    {
+      title: "Hombre",
+      link: "hombre",
+      items: ["Boxers"],
+    },
+    {
+      title: "Mujer",
+      link: "mujer",
+      items: [
+        "Soutiens",
+        "Bodys",
+        "Corseteria",
+        "Bombachas",
+        "Portaligas",
+        "Bikinis Swinwear",
+        "Pijamas Homewear",
+        "Accesorios",
+      ],
+    },
+    {
+      title: "Sex Shop",
+      link: "sex_shop",
+      items: [
+        "Para ellos",
+        "Para ellas",
+        "Pugs",
+        "Disfraces",
+        "Lubricantes",
+        "Juegos",
+      ],
+    },
+  ];
+
+  const handleMenuEnter = (title: string) => {
+    setOpenMenus((prev) => ({ ...prev, [title]: true }));
+  };
+
+  const handleMenuLeave = (title: string) => {
+    setOpenMenus((prev) => ({ ...prev, [title]: false }));
+  };
 
   return (
     <>
@@ -34,25 +80,76 @@ export const TopMenu = () => {
         </div>
 
         {/* Center Menu */}
-        <div
-          onMouseEnter={() => setMen(true)}
-          onMouseLeave={() => setMen(false)}
-          className="hidden sm:block"
-        >
-          <div className="">
-            <Link
-              className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-              href="/"
+        <div className="hidden md:flex items-center space-x-4">
+          {menuItems.map((item, index) => (
+            <div
+              key={index}
+              className="relative group"
+              onMouseEnter={() => handleMenuEnter(item.title)}
+              onMouseLeave={() => handleMenuLeave(item.title)}
             >
-              Productos
-            </Link>
-          </div>
+              <div className="flex items-center space-x-1">
+                <Link
+                  href={`/gender/${item.link}`}
+                  className="py-2 px-3 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                >
+                  {item.title}
+                </Link>
+                <button
+                  className="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                  aria-label={`Expandir menú de ${item.title}`}
+                  onClick={() =>
+                    setOpenMenus((prev) => ({
+                      ...prev,
+                      [item.title]: !prev[item.title],
+                    }))
+                  }
+                >
+                  <IoChevronDownOutline className="w-4 h-4" />
+                </button>
+              </div>
+              <AnimatePresence>
+                {openMenus[item.title] && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10"
+                  >
+                    {item.items.map((subItem, subIndex) => (
+                      <Link
+                        key={subIndex}
+                        href={`/gender/${item.link}/${subItem.replace(
+                          " ",
+                          "_"
+                        )}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        {subItem}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
         </div>
         {/* Search, Cart, Menu */}
         <div className="flex items-center">
-          <Link href="/search" className="mx-2">
-            <IoSearchOutline className="w-5 h-5" />
-          </Link>
+          <div className="hidden md:flex relative">
+            <input
+              type="search"
+              placeholder="Buscar..."
+              className="pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            >
+              <IoSearchOutline className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
           <Link
             href={totalItemsInCart === 0 && loaded ? "/empty" : "/cart"}
@@ -76,77 +173,6 @@ export const TopMenu = () => {
           </button>
         </div>
       </nav>
-      <div
-        onMouseEnter={() => setMen(true)}
-        onMouseLeave={() => setMen(false)}
-        className={clsx(
-          "absolute m-[-10px] w-full z-50 transition-all flex bg-white py-5 justify-center gap-x-14",
-          {
-            hidden: men === false,
-          }
-        )}
-      >
-        <ul>
-          <li className="font-bold">
-            <Link href="/gender/hombre">Hombre</Link>
-          </li>
-          <li>
-            <Link href="/gender/hombre/Boxers">Boxers</Link>
-          </li>
-        </ul>
-        <ul>
-          <li className="font-bold">
-            <Link href="/gender/mujer">Mujer</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Soutiens">Soutiens</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Bodys">Bodys</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Corseteria">Corseteria</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Bombachas">Bombachas</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Portaligas">Portaligas</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Bikinis_Swinwear">Bikinis Swinwear</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Pijamas_Homewear">Pijamas Homewear</Link>
-          </li>
-          <li>
-            <Link href="/gender/mujer/Accesorios">Accesorios</Link>
-          </li>
-        </ul>
-        <ul>
-          <li className="font-bold">
-            <Link href="/gender/sex_shop">Shex Shop</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Para_ellos">Para ellos</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Para ellas">Para ellas</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Pugs">Pugs</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Disfraces">Disfraces</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Lubricantes">Lubricantes</Link>
-          </li>
-          <li>
-            <Link href="/gender/sex_shop/Juegos">Juegos</Link>
-          </li>
-        </ul>
-      </div>
     </>
   );
 };

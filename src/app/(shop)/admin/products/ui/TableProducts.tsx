@@ -107,10 +107,13 @@ export const TableProducts = ({ products }: Props) => {
                   {product.title}
                 </Link>
               </td>
-              <td className="text-sm font-bold  text-gray-900 px-6 py-4 whitespace-nowrap">
+              {/* <td className="text-sm font-bold  text-gray-900 px-6 py-4 whitespace-nowrap">
                 {product.ProductColorSizeStock.map(
                   (obj) => `${currencyFormat(obj.price)}`
                 ).join(" - ")}
+              </td> */}
+              <td className="text-sm font-bold  text-gray-900 px-6 py-4 whitespace-nowrap">
+                {product.ProductColorSizeStock[0].price}
               </td>
 
               <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
@@ -126,9 +129,7 @@ export const TableProducts = ({ products }: Props) => {
               </td>
 
               <td className="text-sm text-gray-900 font-bold px-6 py-4 whitespace-nowrap">
-                {product.ProductColorSizeStock.map(
-                  (obj) => `${obj.size.name}`
-                ).join(" - ")}
+                {product.ProductColorSizeStock[0].size.name}
               </td>
               <td className="text-sm text-gray-900 font-bold px-6 py-4 whitespace-nowrap">
                 <button

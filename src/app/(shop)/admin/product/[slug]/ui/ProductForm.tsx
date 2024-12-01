@@ -39,6 +39,7 @@ interface FormInputs {
     stock: number;
     price: number;
   }[];
+  discount: number|null;
   images?: FileList;
 }
 
@@ -70,10 +71,6 @@ export const ProductForm = ({
     },
   });
 
-  // const { fields, append, remove } = useFieldArray({
-  //   name: "productColorSizeStock",
-  //   control,
-  // });
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -106,40 +103,41 @@ export const ProductForm = ({
   };
 
   const onSubmit = async (data: FormInputs) => {
-    setIsUploading(true);
-    const formData = new FormData();
+      setIsUploading(true);
+      const formData = new FormData();
 
-    const { images, ...productToSave } = data;
+      const { images, ...productToSave } = data;
 
-    if (product.id) {
-      formData.append("id", product.id ?? "");
-    }
-
-    formData.append("title", productToSave.title);
-    formData.append("slug", productToSave.slug);
-    formData.append("description", productToSave.description);
-    formData.append(
-      "productcolorsize",
-      JSON.stringify(productToSave.productColorSizeStock)
-    );
-    formData.append("tags", productToSave.tags);
-    formData.append("category", productToSave.category);
-    formData.append("gender", productToSave.gender);
-
-    if (images) {
-      for (let i = 0; i < images.length; i++) {
-        formData.append("images", images[i]);
+      if (product.id) {
+        formData.append("id", product.id ?? "");
       }
-    }
 
-    const { ok, product: updatedProduct } = await createUpdateProduct(formData);
+      formData.append("title", productToSave.title);
+      formData.append("slug", productToSave.slug);
+      formData.append("description", productToSave.description);
+      formData.append(
+        "productcolorsize",
+        JSON.stringify(productToSave.productColorSizeStock)
+      );
+      formData.append("tags", productToSave.tags);
+      formData.append("category", productToSave.category);
+      formData.append("gender", productToSave.gender);
+      formData.append("discount", String(productToSave.discount));
 
-    if (!ok) {
-      alert("Producto no se pudo actualizar");
-      return;
-    }
-    setIsUploading(false);
-    router.replace(`/admin/product/${updatedProduct?.slug}`);
+      if (images) {
+        for (let i = 0; i < images.length; i++) {
+          formData.append("images", images[i]);
+        }
+      }
+
+      const { ok, product: updatedProduct } = await createUpdateProduct(formData);
+
+      if (!ok) {
+        alert("Producto no se pudo actualizar");
+        return;
+      }
+      setIsUploading(false);
+      router.replace(`/admin/product/${updatedProduct?.slug}`);
   };
 
   return (
@@ -235,16 +233,16 @@ export const ProductForm = ({
           productColorSIzeStock={productColorSize}
           productId={product.id}
         />
-
+        <div className="flex flex-col mb-2">
+          <span>Descuento</span>
+          <input
+            {...register("discount")}
+            type="number"
+            className="p-2 border rounded-md bg-gray-200"
+          />
+        </div>
         <div className="flex flex-col mb-2">
           <span>Fotos</span>
-          {/* <input
-            type="file"
-            {...register("images")}
-            multiple
-            className="p-2 border rounded-md bg-gray-200"
-            accept="image/png, image/jpeg, image/avif"
-          /> */}
           <div
             className={clsx(
               "relative border-2 border-dashed rounded-lg p-8 text-center",
@@ -261,9 +259,7 @@ export const ProductForm = ({
               multiple
               accept="image/*"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              {...register("images", {
-                required: "Por favor, selecciona al menos una imagen",
-              })}
+              {...register("images")}
               onChange={handleImageChange}
             />
 
@@ -386,8 +382,6 @@ export const ProductForm = ({
           ))}
         </div>
       </div>
-
-      {/* </div> */}
     </form>
   );
 };

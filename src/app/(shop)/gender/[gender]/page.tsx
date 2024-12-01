@@ -29,12 +29,6 @@ export default async function GenderByPage({ params, searchParams }: Props) {
     gender: gender as Gender,
   });
 
-
-  if ( products.length === 0 ) {
-    redirect(`/gender/${ gender }`);
-  }
-  
-
   const labels: Record<string, string>  = {
     'hombre': 'para hombres',
     'mujer': 'para mujeres',

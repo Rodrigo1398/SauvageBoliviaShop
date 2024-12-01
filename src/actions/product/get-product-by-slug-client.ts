@@ -32,7 +32,6 @@ export const getProductBySlugClient = async( slug: string ) => {
       }
     })
 
-
     if ( !product ) return null;
 
     return {

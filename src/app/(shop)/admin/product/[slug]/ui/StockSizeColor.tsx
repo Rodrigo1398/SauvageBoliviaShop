@@ -26,6 +26,7 @@ interface FormInputs {
     stock: number;
     price: number;
   }[];
+  discount: number|null;
   images?: FileList;
 }
 
@@ -91,7 +92,7 @@ export const StockSizeColor = ({
                 key={`${size.id}-S`}
                 onClick={() => sizeChanged(index, size.id)}
                 className={clsx(
-                  "p-2 border cursor-pointer rounded-md mr-2 mb-2 w-14 transition-all text-center",
+                  "p-1 border cursor-pointer rounded-md mr-2 mb-2 w-16 transition-all text-center",
                   {
                     "bg-blue-500 text-white": size.id === select[index]?.sizeId,
                   }
